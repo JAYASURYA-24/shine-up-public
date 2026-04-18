@@ -1,0 +1,49 @@
+# ========================
+# FLUTTER (Customer + Partner)
+# ========================
+app-customer/.dart_tool/
+app-customer/.flutter-plugins
+app-customer/.flutter-plugins-dependencies
+app-customer/build/
+app-customer/.idea/
+app-customer/.vscode/
+
+app-partner/.dart_tool/
+app-partner/.flutter-plugins
+app-partner/.flutter-plugins-dependencies
+app-partner/build/
+app-partner/.idea/
+app-partner/.vscode/
+
+# ========================
+# GO BACKEND
+# ========================
+backend/bin/
+backend/tmp/
+backend/*.db
+backend/.env
+backend/*.exe
+backend/*.out
+
+# ========================
+# NODE / REACT ADMIN
+# ========================
+admin-panel/node_modules/
+admin-panel/build/
+admin-panel/dist/
+admin-panel/.next/
+admin-panel/.env
+
+# ========================
+# GLOBAL
+# ========================
+.env
+.env.*
+*.log
+tmp/
+
+# ========================
+# OS FILES
+# ========================
+.DS_Store
+Thumbs.db

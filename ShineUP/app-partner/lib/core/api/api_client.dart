@@ -4,10 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiClient {
-  static const String _emulatorUrl = 'http://10.0.2.2:8080/api/v1';
-  static const String _webUrl = 'http://localhost:8080/api/v1';
-
-  String get baseUrl => kIsWeb ? _webUrl : _emulatorUrl;
+  String get baseUrl => 'https://shine-up-public-production.up.railway.app/api/v1';
 
   Future<String?> _getToken() async {
     final prefs = await SharedPreferences.getInstance();

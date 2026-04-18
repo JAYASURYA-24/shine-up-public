@@ -1,16 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiClient {
   String get baseUrl {
-    if (kIsWeb) return 'http://127.0.0.1:8080/api/v1';
-    try {
-      if (Platform.isAndroid) return 'http://10.0.2.2:8080/api/v1';
-    } catch (_) {}
-    return 'http://127.0.0.1:8080/api/v1';
+    return 'https://shine-up-public-production.up.railway.app/api/v1';
   }
 
   Future<String?> _getToken() async {

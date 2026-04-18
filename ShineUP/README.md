@@ -19,7 +19,7 @@ Once the database is ready, run:
 make seed
 make api
 ```
-*The API will be live at `http://localhost:8080`.*
+*The API is live at `https://shine-up-public-production.up.railway.app`.*
 
 ### 3. Start Admin Panel
 In a new terminal:
@@ -38,7 +38,7 @@ make admin
 4. Run `flutter run`.
 
 > [!TIP]
-> **Android Emulator Connection**: The apps are already configured to connect to `10.0.2.2:8080` so they "just work" with the backend on your host machine.
+> **Production Connection**: Both applications are now configured to connect directly to the production backend at `shine-up-public-production.up.railway.app`. No local setup is required for testing real-time features.
 
 ---
 

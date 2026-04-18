@@ -26,11 +26,7 @@ class WSClient {
   Stream<bool> get connectionState => _connectionStateController.stream;
 
   String get _wsUrl {
-    if (kIsWeb) return 'ws://localhost:8080/ws';
-    try {
-      if (Platform.isAndroid) return 'ws://10.0.2.2:8080/ws';
-    } catch (_) {}
-    return 'ws://localhost:8080/ws';
+    return 'wss://shine-up-public-production.up.railway.app/ws';
   }
 
   /// Connect to WebSocket server

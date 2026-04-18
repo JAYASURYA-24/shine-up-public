@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Activity, Bell, CheckCircle, XCircle, UserCheck, Play, Clock } from 'lucide-react';
+import { WS_BASE } from '../api/client';
+
 
 const EVENT_COLORS = {
   BOOKING_CREATED: { bg: '#e0f2fe', text: '#0369a1', icon: Clock },
@@ -28,7 +30,7 @@ export default function LiveFeed() {
     const token = localStorage.getItem('admin_token');
     if (!token) return;
 
-    const ws = new WebSocket(`ws://localhost:8080/ws?token=${token}`);
+    const ws = new WebSocket(`${WS_BASE}?token=${token}`);
     wsRef.current = ws;
 
     ws.onopen = () => {

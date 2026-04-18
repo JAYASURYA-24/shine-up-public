@@ -42,13 +42,11 @@ class AuthNotifier extends Notifier<AuthState> {
     final repo = ref.read(authRepositoryProvider);
     bool success;
     
-    // Developer Shortcut: Bypass Firebase for easier local testing
-    if (phone == '1234567890' || phone == '0000000000') {
-      success = await repo.devLogin(phone);
-    } else {
-      // Normal Firebase flow (or mock logic)
-      success = await repo.verifyFirebaseToken(phone);
-    }
+    // Default to demo flow for now
+    success = await repo.verifyOTPDemo(
+      phone: phone,
+      otp: otp,
+    );
 
     if (success) {
       state = state.copyWith(status: AuthStatus.authenticated);

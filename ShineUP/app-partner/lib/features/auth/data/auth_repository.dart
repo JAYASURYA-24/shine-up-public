@@ -1,16 +1,61 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepository {
   String get baseUrl {
-    if (kIsWeb) return 'http://localhost:8080/api/v1';
+    return 'https://shine-up-public-production.up.railway.app/api/v1';
+  }
+
+  Future<bool> sendOTP(String phone) async {
     try {
-      if (Platform.isAndroid) return 'http://10.0.2.2:8080/api/v1';
-    } catch (_) {}
-    return 'http://localhost:8080/api/v1'; // Default for Linux/iOS
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/send-otp'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'phone': phone}),
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> verifyOTPDemo({
+    required String phone,
+    required String otp,
+    String name = '',
+    String email = '',
+    String location = '',
+  }) async {
+    debugPrint('Attempting Demo OTP Verify for $phone at $baseUrl...');
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/verify-otp-demo'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'phone': phone,
+          'otp': otp,
+          'name': name,
+          'email': email,
+          'location': location,
+          'role': 'PARTNER',
+        }),
+      ).timeout(const Duration(seconds: 10));
+
+      debugPrint('VerifyOTP Response: ${response.statusCode} - ${response.body}');
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final token = data['token'];
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('jwt_token', token);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint('VerifyOTP error: $e');
+      return false;
+    }
   }
 
   Future<bool> devLogin(String phone) async {

@@ -1,4 +1,6 @@
-const API_BASE = 'http://localhost:8080/api/v1';
+const API_BASE = 'https://shine-up-public-production.up.railway.app/api/v1';
+export const WS_BASE = 'wss://shine-up-public-production.up.railway.app/ws';
+
 
 async function request(path, method = 'GET', body = null) {
   const token = localStorage.getItem('admin_token');

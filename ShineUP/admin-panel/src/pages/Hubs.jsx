@@ -18,19 +18,15 @@ export default function Hubs() {
   const fetchHubs = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('admin_token');
-      const url = cityFilter
-        ? `${api.baseUrl}/admin/hubs?city=${cityFilter}`
-        : `${api.baseUrl}/admin/hubs`;
-      const res = await fetch(url, {
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setHubs(data || []);
-      }
+      const data = await api.getHubs();
+      // Filter locally if needed or update getHubs to accept city
+      const filtered = cityFilter 
+        ? data.filter(h => h.city === cityFilter)
+        : data;
+      setHubs(filtered || []);
     } catch (e) {
       console.error('Failed to fetch hubs:', e);
+      alert(`Error loading hubs: ${e.message}`);
     }
     setLoading(false);
   };
@@ -39,46 +35,33 @@ export default function Hubs() {
     e.preventDefault();
     setSaving(true);
     try {
-      const token = localStorage.getItem('admin_token');
-      const res = await fetch(`${api.baseUrl}/admin/hubs`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          name: form.name,
-          city: form.city,
-          latitude: parseFloat(form.latitude),
-          longitude: parseFloat(form.longitude),
-          radius_km: parseFloat(form.radius_km),
-        }),
+      await api.createHub({
+        name: form.name,
+        city: form.city,
+        latitude: parseFloat(form.latitude),
+        longitude: parseFloat(form.longitude),
+        radius_km: parseFloat(form.radius_km),
       });
-      if (res.ok) {
-        setShowForm(false);
-        setForm({ name: '', city: 'Chennai', latitude: '', longitude: '', radius_km: '10' });
-        fetchHubs();
-      }
+      
+      alert("✅ Hub created successfully!");
+      setShowForm(false);
+      setForm({ name: '', city: 'Chennai', latitude: '', longitude: '', radius_km: '10' });
+      fetchHubs();
     } catch (e) {
       console.error('Failed to create hub:', e);
+      alert(`❌ Failed to create hub: ${e.message}`);
     }
     setSaving(false);
   };
 
   const toggleHub = async (hub) => {
     try {
-      const token = localStorage.getItem('admin_token');
-      await fetch(`${api.baseUrl}/admin/hubs/${hub.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ is_active: !hub.is_active }),
-      });
+      await api.updateHub(hub.id, { is_active: !hub.is_active });
+      alert(`Hub ${hub.is_active ? 'deactivated' : 'activated'}!`);
       fetchHubs();
     } catch (e) {
       console.error('Failed to toggle hub:', e);
+      alert(`Error: ${e.message}`);
     }
   };
 

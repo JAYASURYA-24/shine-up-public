@@ -17,8 +17,10 @@ async function request(path, method = 'GET', body = null) {
     });
 
     if (res.status === 401 || res.status === 403) {
-      // In a real app, redirect to login
-      console.warn('Unauthorized. Token might be expired.');
+      console.warn('Unauthorized. Clearing token and retrying...');
+      localStorage.removeItem('admin_token');
+      window.location.reload(); // This will trigger the devLogin in App.jsx
+      return;
     }
 
     if (!res.ok) {

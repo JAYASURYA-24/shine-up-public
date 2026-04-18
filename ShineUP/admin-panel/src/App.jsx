@@ -14,18 +14,34 @@ import Pricing from './pages/Pricing';
 import { api } from './api/client';
 
 function App() {
+  const [isAuthenticating, setIsAuthenticating] = React.useState(false);
+
   React.useEffect(() => {
     const token = localStorage.getItem('admin_token');
-    if (!token) {
+    if (!token && !isAuthenticating) {
+      setIsAuthenticating(true);
       console.log('No admin token found. Attempting developer login bypass...');
       api.devLogin().then(success => {
         if (success) {
           console.log('✅ Developer login successful.');
           window.location.reload();
+        } else {
+          setIsAuthenticating(false);
+          alert('Failed to log in as Admin. Please check if your backend is running.');
         }
       });
     }
-  }, []);
+  }, [isAuthenticating]);
+
+  if (isAuthenticating) {
+    return (
+      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: '#0f172a', color: 'white' }}>
+        <div className="spin" style={{ width: 40, height: 40, border: '4px solid #3b82f6', borderTopColor: 'transparent', borderRadius: '50%', marginBottom: 20 }}></div>
+        <h2>Setting up Admin Session...</h2>
+        <p>Connecting to Railway Backend</p>
+      </div>
+    );
+  }
 
   return (
     <BrowserRouter>

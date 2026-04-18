@@ -408,6 +408,32 @@ func (h *AdminHandler) AddSKU(c *gin.Context) {
 	c.JSON(http.StatusCreated, sku)
 }
 
+func (h *AdminHandler) DeleteService(c *gin.Context) {
+	serviceID, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid service ID"})
+		return
+	}
+
+	// Delete service and its SKUs
+	err = h.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Delete(&models.SKU{}, "service_id = ?", serviceID).Error; err != nil {
+			return err
+		}
+		if err := tx.Delete(&models.Service{}, "id = ?", serviceID).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to delete service"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "service deleted successfully"})
+}
+
 func (h *AdminHandler) ListServices(c *gin.Context) {
 	category := c.Query("category")
 	query := h.db.Preload("SKUs").Order("sort_order ASC")

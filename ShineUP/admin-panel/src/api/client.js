@@ -72,6 +72,7 @@ export const api = {
 
   // ─── Catalog Actions ───────────────────────────
   createService: (data) => request('/admin/services', 'POST', data),
+  deleteService: (id) => request(`/admin/services/${id}`, 'DELETE'),
   addSKU: (serviceId, data) => request(`/admin/services/${serviceId}/skus`, 'POST', data),
 
   // ─── Hub Management ────────────────────────

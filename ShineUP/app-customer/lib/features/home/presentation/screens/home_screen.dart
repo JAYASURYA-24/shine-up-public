@@ -215,7 +215,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text('Shine-Up ✨', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+                                  Consumer(
+                                    builder: (context, ref, _) {
+                                      final profileAsync = ref.watch(profileProvider);
+                                      return profileAsync.when(
+                                        data: (profile) {
+                                          final name = profile?['name'] ?? 'Guest';
+                                          return Text(
+                                            'Welcome, $name 👋',
+                                            style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                                          );
+                                        },
+                                        loading: () => const Text('Shine-Up ✨', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+                                        error: (_, __) => const Text('Shine-Up ✨', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+                                      );
+                                    },
+                                  ),
                                   const SizedBox(height: 4),
                                   Consumer(
                                     builder: (context, ref, _) {
@@ -244,6 +259,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                             const Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 16),
                                           ],
                                         ),
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Consumer(
+                                    builder: (context, ref, _) {
+                                      final vehiclesAsync = ref.watch(vehiclesProvider);
+                                      return vehiclesAsync.when(
+                                        data: (vehicles) {
+                                          if (vehicles.isEmpty) return const SizedBox.shrink();
+                                          final def = vehicles.firstWhere((v) => v['is_default'] == true, orElse: () => vehicles.first);
+                                          final is4W = def['vehicle_type'] == '4W';
+                                          return Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white.withAlpha(40),
+                                              borderRadius: BorderRadius.circular(20),
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(is4W ? Icons.directions_car : Icons.motorcycle, color: Colors.white, size: 14),
+                                                const SizedBox(width: 6),
+                                                Text(
+                                                  '${def['model_name']} (${def['vehicle_number']})',
+                                                  style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                        loading: () => const SizedBox.shrink(),
+                                        error: (_, __) => const SizedBox.shrink(),
                                       );
                                     },
                                   ),

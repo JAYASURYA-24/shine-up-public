@@ -310,6 +310,7 @@ func main() {
 			// Service & SKU CRUD
 			admin.GET("/services", adminHandler.ListServices)
 			admin.POST("/services", adminHandler.CreateService)
+			admin.DELETE("/services/:id", adminHandler.DeleteService)
 			admin.POST("/services/:id/skus", adminHandler.AddSKU)
 
 			// Hub management

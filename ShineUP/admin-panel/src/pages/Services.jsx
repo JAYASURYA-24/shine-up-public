@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Loader, Plus, Tag, Clock, DollarSign, Image as ImageIcon, ChevronRight, ChevronDown } from 'lucide-react';
+import { Loader, Plus, Tag, Clock, DollarSign, Image as ImageIcon, ChevronRight, ChevronDown, Trash2 } from 'lucide-react';
 import { api } from '../api/client';
 
 export default function Services() {
@@ -61,6 +61,16 @@ export default function Services() {
     }
   };
 
+  const handleDeleteService = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this service? All variants will be removed.')) return;
+    try {
+      await api.deleteService(id);
+      await fetchServices();
+    } catch (err) {
+      alert(`Failed to delete service: ${err.message}`);
+    }
+  };
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
@@ -104,6 +114,14 @@ export default function Services() {
                     onClick={(e) => { e.stopPropagation(); setShowSKUModal(service.id); }}
                   >
                     <Plus size={16} />
+                  </button>
+                  <button 
+                    className="btn-icon danger" 
+                    title="Delete Service"
+                    style={{ marginLeft: '0.5rem', color: '#ff4d4f' }}
+                    onClick={(e) => { e.stopPropagation(); handleDeleteService(service.id); }}
+                  >
+                    <Trash2 size={16} />
                   </button>
                 </div>
 

@@ -2,11 +2,10 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/api/api_config.dart';
 
 class AuthRepository {
-  String get baseUrl {
-    return 'https://shine-up-public-production.up.railway.app/api/v1';
-  }
+  String get baseUrl => ApiConfig.baseUrl;
 
   Future<bool> sendOTP(String phone) async {
     try {

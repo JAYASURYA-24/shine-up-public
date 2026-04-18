@@ -67,9 +67,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
 
     // Call Send OTP API (mocked in backend)
-    setState(() => _isLoadingLocation = true); // Reuse loader for simplicity
-    await ref.read(authRepositoryProvider).sendOTP(phone);
+    setState(() => _isLoadingLocation = true);
+    final success = await ref.read(authRepositoryProvider).sendOTP(phone);
     setState(() => _isLoadingLocation = false);
+
+    if (!success) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to send OTP. Please check your internet connection and try again.')),
+        );
+      }
+      return;
+    }
 
     if (mounted) {
       Navigator.push(

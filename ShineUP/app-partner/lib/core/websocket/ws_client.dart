@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../api/api_config.dart';
 
 /// Real-time WebSocket client for Shine-Up Partner App
 class WSClient {
@@ -25,9 +26,7 @@ class WSClient {
   Stream<Map<String, dynamic>> get newJobs => _newJobController.stream;
   Stream<bool> get connectionState => _connectionStateController.stream;
 
-  String get _wsUrl {
-    return 'wss://shine-up-public-production.up.railway.app/ws';
-  }
+  String get _wsUrl => ApiConfig.wsUrl;
 
   /// Connect to WebSocket server
   Future<void> connect() async {

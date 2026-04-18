@@ -57,7 +57,7 @@ func (s *AuthService) LoginWithFirebaseToken(ctx context.Context, idToken string
 	// Find or Create User
 	var user models.User
 	result := s.db.Where("phone = ?", phoneNumber).First(&user)
-	
+
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			// First time login - register
@@ -104,7 +104,7 @@ func (s *AuthService) DevLogin(ctx context.Context, phoneNumber string, appRole 
 	log.Printf("DevLogin Request - Phone: %s, Role: %s", phoneNumber, appRole)
 	var user models.User
 	result := s.db.Where("phone = ?", phoneNumber).First(&user)
-	
+
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			// Register as a new user if they don't exist
@@ -135,10 +135,10 @@ func (s *AuthService) DevLogin(ctx context.Context, phoneNumber string, appRole 
 // LoginWithOTP handles mock OTP login and registration with additional fields
 func (s *AuthService) LoginWithOTP(ctx context.Context, phone, name, email, location string, lat, lng float64, appRole models.Role) (string, error) {
 	log.Printf("LoginWithOTP Request - Phone: %s, Name: %s, Lat: %f, Lng: %f", phone, name, lat, lng)
-	
+
 	var user models.User
 	result := s.db.Where("phone = ?", phone).First(&user)
-	
+
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			// Register new user
@@ -194,6 +194,24 @@ func (s *AuthService) LoginWithOTP(ctx context.Context, phone, name, email, loca
 				"email":    email,
 				"location": location,
 			})
+			
+			// Ensure address exists for existing customer
+			var customer models.Customer
+			if err := s.db.Where("user_id = ?", user.ID).First(&customer).Error; err == nil {
+				var addrCount int64
+				s.db.Model(&models.Address{}).Where("customer_id = ?", customer.ID).Count(&addrCount)
+				if addrCount == 0 && (lat != 0 || lng != 0 || location != "") {
+					addr := models.Address{
+						CustomerID:  customer.ID,
+						Label:       "Home",
+						AddressLine: location,
+						Latitude:    lat,
+						Longitude:   lng,
+						IsDefault:   true,
+					}
+					s.db.Create(&addr)
+				}
+			}
 		} else if appRole == models.RolePartner {
 			s.db.Model(&models.Partner{}).Where("user_id = ?", user.ID).Updates(map[string]interface{}{
 				"name":     name,

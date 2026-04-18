@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/home_providers.dart';
+import '../../auth/providers/auth_provider.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -83,6 +84,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     leading: const Icon(Icons.account_balance_wallet, color: Color(0xFF4A90E2)),
                     title: const Text('Wallet Balance'),
                     trailing: Text('₹${(profile['wallet_balance'] ?? 0).toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  ),
+                ),
+                const SizedBox(height: 32),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () => ref.read(authStateProvider.notifier).logout(),
+                    icon: const Icon(Icons.logout, color: Colors.red),
+                    label: const Text('Logout', style: TextStyle(color: Colors.red)),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.red),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
                   ),
                 ),
               ],

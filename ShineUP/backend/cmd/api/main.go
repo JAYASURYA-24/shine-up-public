@@ -167,8 +167,8 @@ func main() {
 		authGroup := v1.Group("/auth")
 		{
 			authGroup.POST("/verify-otp", authHandler.VerifyFirebaseToken) // Keep Firebase for future
-			authGroup.POST("/send-otp", authHandler.SendOTP)              // New mocked OTP
-			authGroup.POST("/verify-otp-demo", authHandler.VerifyOTP)     // New mocked OTP (demo)
+			authGroup.POST("/send-otp", authHandler.SendOTP)               // New mocked OTP
+			authGroup.POST("/verify-otp-demo", authHandler.VerifyOTP)      // New mocked OTP (demo)
 			authGroup.POST("/dev-login", authHandler.DevLogin)
 		}
 
@@ -326,7 +326,7 @@ func main() {
 
 			// Announcements
 			admin.POST("/announcements", adminHandler.BroadcastAnnouncement)
-			
+
 			// Call recordings
 			admin.GET("/calls", callHandler.GetMockCallRecordings)
 		}

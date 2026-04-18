@@ -5,8 +5,6 @@ buildCommand = "go build -o bin/api cmd/api/main.go"
 [deploy]
 startCommand = "./bin/api"
 healthcheckPath = "/health"
-healthcheckTimeout = 100
-
-[services.api]
-public = true
-port = 8080
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+maxRestartCount = 5

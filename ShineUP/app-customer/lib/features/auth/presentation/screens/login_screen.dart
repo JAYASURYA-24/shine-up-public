@@ -18,6 +18,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _locationController = TextEditingController();
   bool _isLoadingLocation = false;
+  double _latitude = 0;
+  double _longitude = 0;
 
   Future<void> _getCurrentLocation() async {
     setState(() => _isLoadingLocation = true);
@@ -27,8 +29,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         permission = await Geolocator.requestPermission();
       }
 
-      if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
+        if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
         Position position = await Geolocator.getCurrentPosition();
+        _latitude = position.latitude;
+        _longitude = position.longitude;
+        
         List<Placemark> placemarks = await placemarkFromCoordinates(
           position.latitude,
           position.longitude,
@@ -89,6 +94,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             name: name,
             email: email,
             location: location,
+            latitude: _latitude,
+            longitude: _longitude,
           ),
         ),
       );

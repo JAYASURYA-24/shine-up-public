@@ -26,6 +26,8 @@ class AuthRepository {
     required String name,
     required String email,
     required String location,
+    double latitude = 0,
+    double longitude = 0,
   }) async {
     debugPrint('Attempting Demo OTP Verify for $phone at $baseUrl...');
     try {
@@ -38,6 +40,8 @@ class AuthRepository {
           'name': name,
           'email': email,
           'location': location,
+          'latitude': latitude,
+          'longitude': longitude,
           'role': 'CUSTOMER',
         }),
       ).timeout(const Duration(seconds: 10));

@@ -133,8 +133,8 @@ func (s *AuthService) DevLogin(ctx context.Context, phoneNumber string, appRole 
 }
 
 // LoginWithOTP handles mock OTP login and registration with additional fields
-func (s *AuthService) LoginWithOTP(ctx context.Context, phone, name, email, location string, appRole models.Role) (string, error) {
-	log.Printf("LoginWithOTP Request - Phone: %s, Name: %s, Email: %s, Location: %s, Role: %s", phone, name, email, location, appRole)
+func (s *AuthService) LoginWithOTP(ctx context.Context, phone, name, email, location string, lat, lng float64, appRole models.Role) (string, error) {
+	log.Printf("LoginWithOTP Request - Phone: %s, Name: %s, Lat: %f, Lng: %f", phone, name, lat, lng)
 	
 	var user models.User
 	result := s.db.Where("phone = ?", phone).First(&user)
@@ -150,7 +150,7 @@ func (s *AuthService) LoginWithOTP(ctx context.Context, phone, name, email, loca
 				return "", err
 			}
 
-			// Create role-specific profile
+			// ─── Create Profile & Default Address ──────────
 			if appRole == models.RoleCustomer {
 				customer := models.Customer{
 					UserID:       user.ID,
@@ -160,6 +160,20 @@ func (s *AuthService) LoginWithOTP(ctx context.Context, phone, name, email, loca
 					ReferralCode: s.generateReferralCode(),
 				}
 				s.db.Create(&customer)
+
+				// Automatically add the first address
+				if location != "" {
+					addr := models.Address{
+						CustomerID:  customer.ID,
+						Label:       "Home",
+						AddressLine: location,
+						Latitude:    lat,
+						Longitude:   lng,
+						IsDefault:   true,
+					}
+					s.db.Create(&addr)
+					log.Printf("✅ Created default address for customer %s", customer.ID)
+				}
 			} else if appRole == models.RolePartner {
 				partner := models.Partner{
 					UserID:   user.ID,

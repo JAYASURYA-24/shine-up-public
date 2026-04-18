@@ -7,6 +7,8 @@ class OTPScreen extends ConsumerStatefulWidget {
   final String name;
   final String email;
   final String location;
+  final double latitude;
+  final double longitude;
 
   const OTPScreen({
     super.key,
@@ -14,6 +16,8 @@ class OTPScreen extends ConsumerStatefulWidget {
     required this.name,
     required this.email,
     required this.location,
+    this.latitude = 0,
+    this.longitude = 0,
   });
 
   @override
@@ -38,6 +42,8 @@ class _OTPScreenState extends ConsumerState<OTPScreen> {
       name: widget.name,
       email: widget.email,
       location: widget.location,
+      latitude: widget.latitude,
+      longitude: widget.longitude,
     );
   }
 

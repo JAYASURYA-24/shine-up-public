@@ -42,7 +42,9 @@ class AuthNotifier extends Notifier<AuthState> {
     String otp, {
     String name = '', 
     String email = '', 
-    String location = ''
+    String location = '',
+    double latitude = 0,
+    double longitude = 0,
   }) async {
     state = state.copyWith(status: AuthStatus.loading);
     
@@ -53,6 +55,8 @@ class AuthNotifier extends Notifier<AuthState> {
       name: name,
       email: email,
       location: location,
+      latitude: latitude,
+      longitude: longitude,
     );
     
     if (error == null) {

@@ -24,12 +24,14 @@ type OTPRequest struct {
 }
 
 type OTPVerifyRequest struct {
-	Phone    string      `json:"phone" binding:"required"`
-	OTP      string      `json:"otp" binding:"required"`
-	Name     string      `json:"name"`
-	Email    string      `json:"email"`
-	Location string      `json:"location"`
-	Role     models.Role `json:"role" binding:"required"`
+	Phone     string      `json:"phone" binding:"required"`
+	OTP       string      `json:"otp" binding:"required"`
+	Name      string      `json:"name"`
+	Email     string      `json:"email"`
+	Location  string      `json:"location"`
+	Latitude  float64     `json:"latitude"`
+	Longitude float64     `json:"longitude"`
+	Role      models.Role `json:"role" binding:"required"`
 }
 
 type LoginRequest struct {
@@ -90,7 +92,7 @@ func (h *AuthHandler) VerifyOTP(c *gin.Context) {
 		return
 	}
 
-	jwtToken, err := h.authService.LoginWithOTP(c.Request.Context(), req.Phone, req.Name, req.Email, req.Location, req.Role)
+	jwtToken, err := h.authService.LoginWithOTP(c.Request.Context(), req.Phone, req.Name, req.Email, req.Location, req.Latitude, req.Longitude, req.Role)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

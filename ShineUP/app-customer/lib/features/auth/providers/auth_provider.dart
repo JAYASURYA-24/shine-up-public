@@ -47,23 +47,20 @@ class AuthNotifier extends Notifier<AuthState> {
     state = state.copyWith(status: AuthStatus.loading);
     
     final repo = ref.read(authRepositoryProvider);
-    bool success;
-    
-    // For Demo: always use verifyOTPDemo
-    success = await repo.verifyOTPDemo(
+    final error = await repo.verifyOTPDemo(
       phone: phone,
       otp: otp,
       name: name,
       email: email,
       location: location,
     );
-
-    if (success) {
+    
+    if (error == null) {
       state = state.copyWith(status: AuthStatus.authenticated);
     } else {
       state = state.copyWith(
         status: AuthStatus.error, 
-        errorMessage: "Verification failed. Check OTP (Demo: 123456)"
+        errorMessage: error
       );
     }
   }

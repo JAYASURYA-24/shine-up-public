@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/Shine-Up/backend/internal/core/services"
@@ -77,9 +78,11 @@ func (h *AuthHandler) SendOTP(c *gin.Context) {
 func (h *AuthHandler) VerifyOTP(c *gin.Context) {
 	var req OTPVerifyRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		log.Printf("VerifyOTP Bind Error: %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload format"})
 		return
 	}
+	log.Printf("DEBUG: VerifyOTP Received - Phone: %s, OTP: %s, Role: %s", req.Phone, req.OTP, req.Role)
 
 	// MOCK OTP Check
 	if req.OTP != "123456" && req.Phone != "+1234567890" {

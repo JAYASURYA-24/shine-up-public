@@ -21,7 +21,7 @@ class AuthRepository {
     }
   }
 
-  Future<bool> verifyOTPDemo({
+  Future<String?> verifyOTPDemo({
     required String phone,
     required String otp,
     required String name,
@@ -49,12 +49,18 @@ class AuthRepository {
         final token = data['token'];
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('jwt_token', token);
-        return true;
+        return null; // No error
       }
-      return false;
+      
+      try {
+        final errorData = jsonDecode(response.body);
+        return errorData['error'] ?? 'Server error: ${response.statusCode}';
+      } catch (_) {
+        return 'Server error: ${response.statusCode}';
+      }
     } catch (e) {
       debugPrint('VerifyOTP error: $e');
-      return false;
+      return 'Network error: $e';
     }
   }
 
